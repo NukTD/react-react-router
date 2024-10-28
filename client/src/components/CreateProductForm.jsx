@@ -1,6 +1,38 @@
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 function CreateProductForm() {
+  const targetUrl = "http://localhost:4001";
+  const navigate = useNavigate();
+  const [informationInput, setinformationInput] = useState({
+    name: "",
+    image: "",
+    price: "",
+    description: "",
+  });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setinformationInput({ ...informationInput, [name]: value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        `${targetUrl}/products`,
+        informationInput
+      );
+      console.log("Product created successfully:", response.data);
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+  };
+
   return (
-    <form className="product-form">
+    <form className="product-form" onSubmit={handleSubmit}>
       <h1>Create Product Form</h1>
       <div className="input-container">
         <label>
@@ -10,7 +42,8 @@ function CreateProductForm() {
             name="name"
             type="text"
             placeholder="Enter name here"
-            onChange={() => {}}
+            value={informationInput.name}
+            onChange={handleInputChange}
           />
         </label>
       </div>
@@ -22,7 +55,8 @@ function CreateProductForm() {
             name="image"
             type="text"
             placeholder="Enter image url here"
-            onChange={() => {}}
+            value={informationInput.image}
+            onChange={handleInputChange}
           />
         </label>
       </div>
@@ -34,7 +68,8 @@ function CreateProductForm() {
             name="price"
             type="number"
             placeholder="Enter price here"
-            onChange={() => {}}
+            value={informationInput.price}
+            onChange={handleInputChange}
           />
         </label>
       </div>
@@ -46,14 +81,17 @@ function CreateProductForm() {
             name="description"
             type="text"
             placeholder="Enter description here"
-            onChange={() => {}}
+            value={informationInput.description}
+            onChange={handleInputChange}
             rows={4}
             cols={30}
           />
         </label>
       </div>
       <div className="form-actions">
-        <button type="submit">Create</button>
+        <button type="submit" >
+          Create
+        </button>
       </div>
     </form>
   );
